@@ -25,10 +25,14 @@ $ docker run --detach --name flasksimple --publish 80:80 flask-hello
 * `--publish` Publishes the container's ports to the host.
 * The last argument is the name of the image, which comes from the tag in the build process.
 
+You can see it running in multiple ways:
+* Open a browser to `http://localhost` and you'll see the output from the application in your browser.
+* Open docker and go to Containers/Apps.  You should see `flask-hello` listed there as running.
+
 ## View stdout
 If you want to later attach to this process and see its output:
 ```
-$ docker attach flasksimple --sig-proxy=false flasksimple
+$ docker attach flasksimple --sig-proxy=false
 ```
 This will let you see the HTTP requests going through Flask.
 To stop viewing the logs, use ^C, but remember the container will still be running in the background. [Reference: How do you attach and detach from a Docker process?](https://stackoverflow.com/questions/19688314/how-do-you-attach-and-detach-from-dockers-process)
