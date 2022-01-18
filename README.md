@@ -45,7 +45,7 @@ $ docker rm flasksimple
 ```
 
 # Part 2: Run Flask App in K8s
-In this section we will get our little Flask app running in Kubernetes.
+In this section we will get our Flask app running in Kubernetes.
 
 References:
 * [K8s Minicube docs, local container images](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-docker-container-image)
@@ -77,3 +77,15 @@ $ kubectl expose deployment hello-minikube --type=NodePort --port=8080
 ```
 $ kubectl delete deployment hello-minikube
 ```
+
+## Interlude: Windows container registry with Minkube
+To be able to use a local container registry on Minikube, this is what I did, based on [the Minikube docs for Windows](https://minikube.sigs.k8s.io/docs/handbook/registry/):
+1. Create a port forward from the docker VM: `kubectl port-forward --namespace kube-system service/registry 5000:80`. This is a process that keeps running.
+2. Use `socat` to make another data forwarder, also a process in a container that keeps running: `docker run --rm -it --network=host alpine ash -c "apk add socat && socat TCP-LISTEN:5000,reuseaddr,fork TCP:host.docker.internal:5000"`
+3. Once both of those are running, I can refer to the local container registry as `localhost:5000` as in this example:
+```
+docker tag my/image localhost:5000/myimage
+docker push localhost:5000/myimage
+```
+
+Is this really the way to do this? It's preposterously messy.  I may as well just get an Azure Container Registry and use that instead.
